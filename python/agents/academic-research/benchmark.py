@@ -20,7 +20,7 @@ async def _run(agent, question: str):
         user_id=session.user_id, session_id=session.id, new_message=content
     ):
         if getattr(event, "usage_metadata", None):
-            tokens = event.usage_metadata.total_tokens
+            tokens = event.usage_metadata.total_token_count
     return time.perf_counter() - start, tokens
 
 
