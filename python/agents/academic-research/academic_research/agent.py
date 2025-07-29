@@ -43,7 +43,4 @@ academic_coordinator = LlmAgent(
     ],
 )
 
-try:
-    root_agent = accelerate(academic_coordinator)
-except Exception:  # Fallback if acceleration fails
-    root_agent = academic_coordinator
+root_agent = accelerate(academic_coordinator)

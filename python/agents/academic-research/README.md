@@ -359,7 +359,8 @@ that the agent's responses match a pre-defined response reasonablly well.
 
 The `benchmark.py` script compares the runtime and token usage of the standard
 agent against the [Tygent](https://pypi.org/project/tygent/) accelerated
-version.
+version. Instead of relying on `total_token_count`, it sums the individual token
+counts returned in the usage metadata to compute the total.
 
 ```bash
 poetry run python benchmark.py
