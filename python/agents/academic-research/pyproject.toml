@@ -16,6 +16,7 @@ google-cloud-aiplatform = { version = "^1.93", extras = [
     "adk",
     "agent-engines",
 ] }
+tygent = "^0.4.0"
 
 [tool.poetry.group.dev]
 optional = true

@@ -355,6 +355,16 @@ is functional. `eval` is a demonstration of how to evaluate the agent, using the
 `AgentEvaluator` in ADK. It sends a couple requests to the agent and expects
 that the agent's responses match a pre-defined response reasonablly well.
 
+## Benchmarking
+
+The `benchmark.py` script compares the runtime and token usage of the standard
+agent against the [Tygent](https://pypi.org/project/tygent/) accelerated
+version.
+
+```bash
+poetry run python benchmark.py
+```
+
 
 ## Deployment
 
