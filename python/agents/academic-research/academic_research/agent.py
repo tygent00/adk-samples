@@ -16,7 +16,6 @@
 
 from google.adk.agents import LlmAgent
 from google.adk.tools.agent_tool import AgentTool
-from tygent import accelerate
 
 from . import prompt
 from .sub_agents.academic_newresearch import academic_newresearch_agent
@@ -43,4 +42,4 @@ academic_coordinator = LlmAgent(
     ],
 )
 
-root_agent = accelerate(academic_coordinator)
+root_agent = academic_coordinator

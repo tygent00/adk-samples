@@ -4,36 +4,9 @@ import time
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 
-from google.adk.agents import LlmAgent
-from google.adk.tools.agent_tool import AgentTool
 from tygent import accelerate
 
-from academic_research import prompt
-from academic_research.sub_agents.academic_newresearch import academic_newresearch_agent
-from academic_research.sub_agents.academic_websearch import academic_websearch_agent
-
-
-def _create_academic_coordinator() -> LlmAgent:
-    return LlmAgent(
-        name="academic_coordinator",
-        model="gemini-2.5-pro",
-        description=(
-            "analyzing seminal papers provided by the users, "
-            "providing research advice, locating current papers "
-            "relevant to the seminal paper, generating suggestions "
-            "for new research directions, and accessing web resources "
-            "to acquire knowledge"
-        ),
-        instruction=prompt.ACADEMIC_COORDINATOR_PROMPT,
-        output_key="seminal_paper",
-        tools=[
-            AgentTool(agent=academic_websearch_agent),
-            AgentTool(agent=academic_newresearch_agent),
-        ],
-    )
-
-
-academic_coordinator = _create_academic_coordinator()
+from academic_research.agent import academic_coordinator
 
 
 async def _run(agent, question: str):
@@ -49,7 +22,7 @@ async def _run(agent, question: str):
     ):
         if getattr(event, "usage_metadata", None):
             usage = event.usage_metadata
-            tokens = (
+            tokens += (
                 (usage.prompt_token_count or 0)
                 + (usage.candidates_token_count or 0)
                 + (usage.tool_use_prompt_token_count or 0)
@@ -62,8 +35,8 @@ async def main():
     question = "Who are you?"
     base_time, base_tokens = await _run(academic_coordinator, question)
 
-    accelerated = accelerate(academic_coordinator)
-    acc_time, acc_tokens = await _run(accelerated, question)
+    accelerated_run = accelerate(_run)
+    acc_time, acc_tokens = await accelerated_run(academic_coordinator, question)
 
     print(
         f"Baseline: {base_time:.2f}s, {base_tokens} tokens\n"
