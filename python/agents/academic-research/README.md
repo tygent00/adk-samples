@@ -360,10 +360,10 @@ that the agent's responses match a pre-defined response reasonablly well.
 The `benchmark.py` script compares the runtime and token usage of the standard
 agent against the [Tygent](https://pypi.org/project/tygent/) accelerated
 version. Instead of relying on `total_token_count`, it sums the individual token
-counts returned in the usage metadata to compute the total. The script
-constructs the coordinator with `create_agent()` so changes to the prompt take
-effect each run and prints the elapsed time, total tokens, and the agent's final
-reply for both cases.
+counts returned in the usage metadata to compute the total. The benchmark
+reloads the prompt module before constructing each agent so edits to the
+instructions immediately take effect. It prints the elapsed time, total tokens,
+and the agent's final reply for both cases.
 
 ```bash
 poetry run python benchmark.py
