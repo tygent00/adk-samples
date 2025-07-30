@@ -4,9 +4,7 @@ import time
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 
-from tygent import accelerate
-
-from academic_research.agent import academic_coordinator
+from academic_research.agent import create_agent
 
 
 async def _run(agent, question: str):
@@ -36,10 +34,12 @@ async def _run(agent, question: str):
 
 async def main():
     question = "Who are you?"
-    base_time, base_tokens, base_output = await _run(academic_coordinator, question)
 
-    accelerated_run = accelerate(_run)
-    acc_time, acc_tokens, acc_output = await accelerated_run(academic_coordinator, question)
+    baseline_agent = create_agent()
+    base_time, base_tokens, base_output = await _run(baseline_agent, question)
+
+    accelerated_agent = create_agent(accelerated=True)
+    acc_time, acc_tokens, acc_output = await _run(accelerated_agent, question)
 
     print(
         f"Baseline: {base_time:.2f}s, {base_tokens} tokens\n"
