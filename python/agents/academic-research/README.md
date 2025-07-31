@@ -370,8 +370,16 @@ print("Baseline:", results["baseline"])
 print("Accelerated:", results["accelerated"])
 ```
 
-The function prints nothing by default but returns the elapsed time, total tokens
-used, and the final reply for both the standard and accelerated executions.
+If you prefer not to write a Python snippet, the helper can be invoked directly
+from the command line. Provide a question after the module name or omit it to be
+prompted interactively:
+
+```bash
+poetry run python -m academic_research.agent "Who are you?"
+```
+
+The command prints the elapsed time, total tokens used, and the final reply for
+both the standard and accelerated executions.
 
 ## Deployment
 

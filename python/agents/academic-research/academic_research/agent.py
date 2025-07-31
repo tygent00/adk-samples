@@ -116,3 +116,25 @@ async def run_with_and_without_acceleration(question: str) -> dict:
             "output": acc_output,
         },
     }
+
+
+async def main(question: str | None = None) -> None:
+    """Command-line entry point for comparing runs."""
+    if question is None:
+        question = input("Enter your question: ")
+    results = await run_with_and_without_acceleration(question)
+    print("Baseline:", results["baseline"])
+    print("Accelerated:", results["accelerated"])
+
+
+if __name__ == "__main__":
+    import argparse
+    import asyncio
+
+    parser = argparse.ArgumentParser(
+        description="Compare default and accelerated academic research agent runs"
+    )
+    parser.add_argument("prompt", nargs="?", help="Question to ask the agent")
+    args = parser.parse_args()
+
+    asyncio.run(main(args.prompt))
