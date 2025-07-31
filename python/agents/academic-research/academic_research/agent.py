@@ -57,6 +57,12 @@ def create_agent(*, accelerated: bool = False) -> LlmAgent:
             AgentTool(agent=academic_newresearch_agent),
         ],
     )
+    # Tygent expects each tool to expose a callable `func` attribute. The ADK
+    # `AgentTool` wrapper stores the delegated agent on the `agent` attribute,
+    # so attach the agent itself as `func` for compatibility.
+    for tool in agent.tools:
+        if getattr(tool, "agent", None) and not hasattr(tool, "func"):
+            tool.func = tool.agent
     if accelerated:
         return accelerate(agent)
     return agent
