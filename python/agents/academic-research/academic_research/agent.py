@@ -107,9 +107,8 @@ async def run_with_and_without_acceleration(question: str) -> dict:
     base_time, base_tokens, base_output = await _run(base_agent, question)
 
     importlib.reload(prompt)
-    accelerated_agent = create_agent()
-    accelerated_run = accelerate(_run)
-    acc_time, acc_tokens, acc_output = await accelerated_run(accelerated_agent, question)
+    accelerated_agent = create_agent(accelerated=True)
+    acc_time, acc_tokens, acc_output = await _run(accelerated_agent, question)
 
     return {
         "baseline": {
@@ -138,8 +137,12 @@ def main() -> None:
 
     question = args.prompt or input("Enter your question: ")
     results = asyncio.run(run_with_and_without_acceleration(question))
-    print("Baseline:", results["baseline"])
-    print("Accelerated:", results["accelerated"])
+    base = results["baseline"]
+    acc = results["accelerated"]
+    print(f"Baseline: {base['time']:.2f}s, {base['tokens']} tokens")
+    print(f"Output: {base['output']}\n")
+    print(f"Tygent accelerated: {acc['time']:.2f}s, {acc['tokens']} tokens")
+    print(f"Output: {acc['output']}")
 
 
 if __name__ == "__main__":
