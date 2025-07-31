@@ -14,8 +14,13 @@
 
 """Academic_Research: Research advice, related literature finding, research area proposals, web knowledge access."""
 
+import importlib
+import time
+
 from google.adk.agents import LlmAgent
+from google.adk.runners import InMemoryRunner
 from google.adk.tools.agent_tool import AgentTool
+from google.genai import types
 from tygent import accelerate
 
 from . import prompt
@@ -61,3 +66,53 @@ academic_coordinator = create_agent()
 
 # Default exported agent
 root_agent = academic_coordinator
+
+
+async def _run(agent: LlmAgent, question: str) -> tuple[float, int, str]:
+    """Executes the agent and returns timing, token usage, and output."""
+    runner = InMemoryRunner(agent=agent, app_name="academic-research")
+    session = await runner.session_service.create_session(
+        app_name=runner.app_name, user_id="comparison"
+    )
+    content = types.Content(parts=[types.Part(text=question)])
+    start = time.perf_counter()
+    tokens = 0
+    response_text = ""
+    async for event in runner.run_async(
+        user_id=session.user_id, session_id=session.id, new_message=content
+    ):
+        if event.content.parts and event.content.parts[0].text:
+            response_text = event.content.parts[0].text
+        if getattr(event, "usage_metadata", None):
+            usage = event.usage_metadata
+            tokens += (
+                (usage.prompt_token_count or 0)
+                + (usage.candidates_token_count or 0)
+                + (usage.tool_use_prompt_token_count or 0)
+                + (usage.cached_content_token_count or 0)
+            )
+    return time.perf_counter() - start, tokens, response_text
+
+
+async def run_with_and_without_acceleration(question: str) -> dict:
+    """Runs the agent normally and with Tygent acceleration for comparison."""
+    importlib.reload(prompt)
+    base_agent = create_agent()
+    base_time, base_tokens, base_output = await _run(base_agent, question)
+
+    importlib.reload(prompt)
+    accelerated_agent = create_agent(accelerated=True)
+    acc_time, acc_tokens, acc_output = await _run(accelerated_agent, question)
+
+    return {
+        "baseline": {
+            "time": base_time,
+            "tokens": base_tokens,
+            "output": base_output,
+        },
+        "accelerated": {
+            "time": acc_time,
+            "tokens": acc_tokens,
+            "output": acc_output,
+        },
+    }
