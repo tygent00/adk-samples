@@ -6,6 +6,12 @@ authors = [{ name = "Antonio Gulli", email = "gulli@google.com" }]
 license = "Apache License 2.0"
 readme = "README.md"
 
+[project.scripts]
+academic-research-compare = "academic_research.agent:main"
+
+[tool.poetry.scripts]
+academic-research-compare = "academic_research.agent:main"
+
 [tool.poetry.dependencies]
 python = "^3.9"
 google-adk = "^1.0.0"
@@ -16,6 +22,7 @@ google-cloud-aiplatform = { version = "^1.93", extras = [
     "adk",
     "agent-engines",
 ] }
+tygent = "^0.4.0"
 
 [tool.poetry.group.dev]
 optional = true

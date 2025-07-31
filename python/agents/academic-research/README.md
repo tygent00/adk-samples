@@ -355,6 +355,31 @@ is functional. `eval` is a demonstration of how to evaluate the agent, using the
 `AgentEvaluator` in ADK. It sends a couple requests to the agent and expects
 that the agent's responses match a pre-defined response reasonablly well.
 
+## Comparing default and accelerated runs
+
+You can evaluate how [Tygent](https://pypi.org/project/tygent/) affects
+performance by running each query twice—once normally and once with
+acceleration—using a helper function in `agent.py`:
+
+```python
+import asyncio
+from academic_research.agent import run_with_and_without_acceleration
+
+results = asyncio.run(run_with_and_without_acceleration("Who are you?"))
+print("Baseline:", results["baseline"])
+print("Accelerated:", results["accelerated"])
+```
+
+If you prefer not to write a Python snippet, the helper can be invoked directly
+from the command line. Provide a question after the module name or omit it to be
+prompted interactively:
+
+```bash
+poetry run academic-research-compare "Who are you?"
+```
+
+The command prints the elapsed time, total tokens used, and the final reply for
+both the standard and accelerated executions.
 
 ## Deployment
 
