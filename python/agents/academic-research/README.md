@@ -375,7 +375,7 @@ from the command line. Provide a question after the module name or omit it to be
 prompted interactively:
 
 ```bash
-poetry run python -m academic_research.agent "Who are you?"
+poetry run academic-research-compare "Who are you?"
 ```
 
 The command prints the elapsed time, total tokens used, and the final reply for
